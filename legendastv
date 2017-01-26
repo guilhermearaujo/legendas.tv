@@ -45,9 +45,11 @@ def find_subtitle(path)
 
   @service.working_dir = path.dirname
 
-  subtitle = @service.find_release(release).first
+  subtitles = @service.find_release(release)
 
-  @service.download(subtitle)
+  raise "No subtitle found for #{release.release_name}" if subtitles.nil?
+
+  @service.download(subtitles.first)
 rescue => e
   puts e.message
 end
