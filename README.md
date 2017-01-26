@@ -6,6 +6,7 @@ If you enjoy their work, don't forget to [support them].
 ## How to install
 
 * Clone this project: `$ git clone https://github.com/guilhermearaujo/legendas.tv.git`
+* Install [Unrar]: `$ gem install 'nokogiri'`
 * Install [Nokogiri]: `$ gem install 'nokogiri'`
 * Install [Rubyzip]: `$ gem install 'rubyzip'`
 * Run: `./legendastv <path to your video file>`
