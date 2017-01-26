@@ -2,8 +2,8 @@ module LegendasTV
   class Release
     attr_reader :title, :year, :season, :episode, :source, :quality, :codec, :group
 
-    MOVIE_PATTERN = /(?<title>.+)\.(?<year>\d+)(\.?<proper>PROPER)?\.(?<quality>.+)\.(?<source>.+)\.(?<codec>.+)[\.-](?<group>.+)/
-    SERIES_PATTERN = /(?<title>.+)\.S(?<season>\d+)E(?<episode>\d+)(?<proper>(\.PROPER))?\.(?<quality>.+)\.(?<source>.+)\.(?<codec>.+)[\.-](?<group>.+)/
+    MOVIE_PATTERN =  /(?<title>.+)\.(?<year>\d+)(?<proper>(\.(PROPER|REPACK)))?\.(?<quality>[^\.]+)\.(?<source>.+)\.(?<codec>[^\.]+)[\.-](?<group>[^\.]+)/
+    SERIES_PATTERN = /(?<title>.+)\.S(?<season>\d+)E(?<episode>\d+)(?<proper>(\.(PROPER|REPACK)))?\.(?<quality>[^\.]+)\.(?<source>.+)\.(?<codec>[^\.]+)[\.-](?<group>[^\.]+)/
 
     def initialize(filename)
       release_name = File.basename(filename, '.*').gsub(/[\s_]/, '.')
