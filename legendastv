@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+
+require_relative 'legendas_tv/release'
+require_relative 'legendas_tv/service'
+require 'io/console'
+require 'optparse'
+require 'pathname'
+
+EXTENSIONS = %w(.avi .flv .m4v .mkv .mov .mp4 .mpeg .mpg .ogv .rmvb .ts .webm .wmv).freeze
+
+def login
+  print 'Enter your username: '
+  username = STDIN.gets.chomp
+
+  print 'Enter your password: '
+  password = STDIN.noecho(&:gets).chomp
+
+  puts "\n\n"
+
+  with_progress('Logging in') { @service.login(username, password) }
+
+  puts "Logged in as #{username}"
+rescue => e
+  puts e.message
+  exit
+end
+
+def with_progress(message)
+  t = Thread.new do
+    loop do
+      4.times do |i|
+        STDOUT.write "#{message}#{'.' * i}#{' ' * (4 - i)}\r"
+        sleep 0.333
+      end
+    end
+  end
+
+  yield
+
+  t.exit
+end
+
+def find_subtitle(path)
+  release = LegendasTV::Release.new(path.basename)
+
+  @service.working_dir = path.dirname
+
+  subtitle = @service.find_release(release).first
+
+  @service.download(subtitle)
+rescue => e
+  puts e.message
+end
+
+@service = LegendasTV::Service.new
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: legendastv [options] <file_path>'
+
+  opts.on('-h', '--help', 'Display this help') { puts opts; exit }
+  opts.on('-l', '--logout', 'Logs the current user out') { @service.logout }
+end.parse!
+
+login unless @service.logged_in?
+
+ARGV.each do |arg|
+  path = Pathname.new(arg).realdirpath
+
+  if path.file?
+    find_subtitle(path) if EXTENSIONS.include?(path.extname)
+  elsif path.directory?
+    Dir.glob(arg + '/**/*').each do |filepath|
+      path = Pathname.new(filepath)
+      find_subtitle(path) if EXTENSIONS.include?(path.extname)
+    end
+  else
+    puts "Invalid path '#{path}'"
+  end
+end
