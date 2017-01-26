@@ -56,6 +56,8 @@ end
 
 @service = LegendasTV::Service.new
 
+ARGV.push('-h') if ARGV.empty?
+
 OptionParser.new do |opts|
   opts.banner = 'Usage: legendastv [options] <file_path>'
 
