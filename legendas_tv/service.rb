@@ -90,7 +90,7 @@ module LegendasTV
 
       results.concat(find_by(query: query, id: id, lang: lang, page: page + 1)) if results.count >= 24
 
-      results
+      results || []
     end
 
     def extract(filepath)
