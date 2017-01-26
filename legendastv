@@ -65,6 +65,8 @@ OptionParser.new do |opts|
   opts.on('-l', '--logout', 'Logs the current user out') { @service.logout }
 end.parse!
 
+exit if ARGV.empty?
+
 login unless @service.logged_in?
 
 ARGV.each do |arg|
