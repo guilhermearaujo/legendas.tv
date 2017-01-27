@@ -1,16 +1,21 @@
 require_relative 'subtitle'
 require 'net/http'
 require 'nokogiri'
-require 'open-uri'
 require 'securerandom'
 
 module LegendasTV
   module Net
-    def self.GET(url, params = {})
+    def self.GET(url, params = {}, headers = {})
       uri = URI.parse(URI.encode(url))
       uri.query = URI.encode_www_form(params)
 
-      ::Net::HTTP.get_response(uri)
+      request = ::Net::HTTP::Get.new(uri)
+
+      headers.each { |k, v| request[k] = v }
+
+      ::Net::HTTP.start(uri.hostname) do |http|
+        http.request(request)
+      end
     end
 
     def self.POST(url, params = {})
@@ -44,8 +49,9 @@ module LegendasTV
     end
 
     def self.Parse(url)
-      uri = URI.encode(url)
-      results = Nokogiri::HTML(open(uri)).xpath('//article/div')
+      body = GET(url, {}, { 'X-Requested-With' => 'XMLHttpRequest' }).body
+
+      results = Nokogiri::HTML(body).xpath('//article/div')
 
       results.map do |r|
         next if r.attr('class') =~ /banner/
