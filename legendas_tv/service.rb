@@ -79,6 +79,8 @@ module LegendasTV
       Net::Download(BASE_URL + subtitle.download_url, @token) do |filepath|
         extract(filepath)
       end
+
+      puts "Downloaded subtitle for #{subtitle.release}"
     end
 
     private
