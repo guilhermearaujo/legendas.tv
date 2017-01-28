@@ -87,7 +87,7 @@ ARGV.each do |arg|
     Dir.glob(arg + '/**/*').each do |filepath|
       path = Pathname.new(filepath)
 
-      find_subtitle(path) if should_download(path)
+      find_subtitle(path) if should_download?(path)
     end
   else
     puts "Invalid path '#{path}'"
