@@ -58,17 +58,17 @@ module LegendasTV
         @size = size
         @date = Time.parse(date)
 
-        @basename = ::Pathname.new(name).basename
+        @basename = ::Pathname.new(name).basename.to_s
       end
 
       def extract(destination, overwrite = true)
         pathname = ::Pathname.new(destination)
-        dir = pathname.dirname
-        file = pathname.basename
+        dir = pathname.dirname.to_s
+        file = pathname.basename.to_s
 
         opts = overwrite ? '-y' : ''
 
-        `unrar e #{opts} #{@archive} #{name} #{dir} && mv #{dir}/#{@basename} #{dir}/#{file}`
+        `unrar e #{opts} "#{@archive}" "#{name}" "#{dir}" && mv "#{dir}/#{@basename}" "#{dir}/#{file}"`
       end
     end
   end
