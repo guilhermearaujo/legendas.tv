@@ -66,7 +66,7 @@ module LegendasTV
         if release.movie?
           media.first
         else
-          media.find { |m| m.season == release.season }
+          media.sort_by(&:id).find { |m| m.season == release.season }
         end
 
       raise "Could not find medium for '#{release.release_name}'" unless medium
