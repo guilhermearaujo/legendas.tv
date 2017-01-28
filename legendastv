@@ -41,9 +41,8 @@ def with_progress(message)
 end
 
 def should_download?(path)
-  srt_path = path.to_s.gsub(path.extname, '.srt')
-
-  return true if EXTENSIONS.include?(path.extname) && !File.exist?(srt_path)
+  return false unless EXTENSIONS.include?(path.extname)
+  return true unless File.exist?(path.to_s.gsub(path.extname, '.srt'))
 
   puts "Subtitle for '#{path.basename}' already downloaded"
   false
