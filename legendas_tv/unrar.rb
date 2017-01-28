@@ -1,6 +1,11 @@
 require 'pathname'
 require 'time'
 
+unless system('unrar -V > /dev/null 2>&1')
+  puts 'Unrar is not installed. Check http://www.rarlab.com/rar_add.htm'
+  raise 'unrar not found'
+end
+
 module LegendasTV
   module Unrar
     class File

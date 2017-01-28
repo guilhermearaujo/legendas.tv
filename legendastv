@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative 'legendas_tv/release'
-require_relative 'legendas_tv/service'
+require_relative 'legendas_tv/service' rescue exit
 require 'io/console'
 require 'optparse'
 require 'pathname'
