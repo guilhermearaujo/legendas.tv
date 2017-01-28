@@ -47,5 +47,6 @@ May you wish to remove your user information, run `./legendastv --logout` to wip
 
 [Legendas.tv]: http://legendas.tv
 [support them]: http://legendas.tv/vip
+[Unrar]: http://www.rarlab.com/rar_add.htm
 [Nokogiri]: https://github.com/sparklemotion/nokogiri
 [Rubyzip]: https://github.com/rubyzip/rubyzip
