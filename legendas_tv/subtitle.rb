@@ -22,7 +22,7 @@ module LegendasTV
       @uploader  = info[:uploader]
       @rating    = info[:rating]
       @downloads = info[:downloads]
-      @release   = components[:release].tr('_', '.')
+      @release   = components[:release].gsub('_', '.')
     end
 
     def download_url

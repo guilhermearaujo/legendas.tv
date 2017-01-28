@@ -41,16 +41,16 @@ module LegendasTV
 
     def release_name
       if movie?
-        "#{title.tr(' ', '.')}.#{year}.#{quality}.#{source}.#{codec}-#{group}"
+        "#{title.gsub(' ', '.')}.#{year}.#{quality}.#{source}.#{codec}-#{group}"
       else
-        "#{title.tr(' ', '.')}.#{episode_code}.#{quality}.#{source}.#{codec}-#{group}"
+        "#{title.gsub(' ', '.')}.#{episode_code}.#{quality}.#{source}.#{codec}-#{group}"
       end
     end
 
     private
 
     def initialize_movie(info)
-      @title   = info[:title].tr('.', ' ')
+      @title   = info[:title].gsub('.', ' ')
       @year    = info[:year].to_i
       @quality = info[:quality]
       @source  = info[:source]
@@ -60,7 +60,7 @@ module LegendasTV
     end
 
     def initialize_series(info)
-      @title   = info[:title].tr('.', ' ')
+      @title   = info[:title].gsub('.', ' ')
       @season  = info[:season].to_i
       @episode = info[:episode].to_i
       @quality = info[:quality]
