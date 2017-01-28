@@ -15,7 +15,7 @@ module LegendasTV
       elsif info = release_name.match(SERIES_PATTERN)
         initialize_series(info)
       else
-        raise 'Unknown release'
+        raise "Unknown release '#{basename}'"
       end
     end
 
