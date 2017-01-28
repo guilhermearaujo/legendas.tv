@@ -49,7 +49,7 @@ def find_subtitle(path)
 
   raise "No subtitle found for #{release.release_name}" if subtitles.empty?
 
-  @service.download(subtitles.first)
+  @service.download(release, subtitles.first)
 rescue => e
   puts e.message
 end

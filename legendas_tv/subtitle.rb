@@ -1,3 +1,5 @@
+require 'time'
+
 module LegendasTV
   class Subtitle
     attr_reader :id, :title, :date, :uploader, :rating, :url, :downloads, :release

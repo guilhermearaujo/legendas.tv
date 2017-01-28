@@ -1,5 +1,6 @@
 require_relative 'medium'
 require_relative 'net'
+require_relative 'unrar'
 require 'json'
 require 'zip'
 
@@ -73,11 +74,11 @@ module LegendasTV
       find_by(query: release.best_guess_query, id: medium.id, lang: lang, page: 0)
     end
 
-    def download(subtitle)
+    def download(release, subtitle)
       raise 'User not logged in' unless @token
 
-      Net::Download(BASE_URL + subtitle.download_url, @token) do |filepath|
-        extract(filepath)
+      Net::Download(BASE_URL + subtitle.download_url, @token) do |archive|
+        extract(release, archive)
       end
 
       puts "Downloaded subtitle for #{subtitle.release}"
@@ -95,18 +96,26 @@ module LegendasTV
       results || []
     end
 
-    def extract(filepath)
-      if filepath =~ /.rar$/
-        `unrar e #{filepath} *.srt #{working_dir}`
-      elsif filepath =~ /.zip$/
-        unzip(filepath)
+    def extract(release, archive)
+      if archive =~ /.rar$/
+        unrar(release, archive)
+      elsif archive =~ /.zip$/
+        unzip(release, archive)
       end
     end
 
-    def unzip(filepath)
-      ::Zip::File.open(filepath) do |zip|
+    def unrar(release, archive)
+      Unrar::File.open(archive) do |rar|
+        rar.each do |entry|
+          entry.extract("#{working_dir}/#{release.basename}.srt") if entry.name =~ /#{release.group}.srt$/
+        end
+      end
+    end
+
+    def unzip(release, archive)
+      ::Zip::File.open(archive) do |zip|
         zip.each do |entry|
-          entry.extract(working_dir + '/' + entry.name) if entry.name =~ /.srt$/
+          entry.extract("#{working_dir}/#{release.basename}.srt") if entry.name =~ /#{release.group}.srt$/
         end
       end
     end
