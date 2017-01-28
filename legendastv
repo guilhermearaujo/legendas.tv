@@ -40,6 +40,15 @@ def with_progress(message)
   t.exit
 end
 
+def should_download?(path)
+  srt_path = path.to_s.gsub(path.extname, '.srt')
+
+  return true if EXTENSIONS.include?(path.extname) && !File.exist?(srt_path)
+
+  puts "Subtitle for '#{path.basename}' already downloaded"
+  false
+end
+
 def find_subtitle(path)
   release = LegendasTV::Release.new(path.basename)
 
@@ -47,7 +56,7 @@ def find_subtitle(path)
 
   subtitles = @service.find_release(release)
 
-  raise "No subtitle found for #{release.release_name}" if subtitles.empty?
+  raise "No subtitle found for '#{release.release_name}'" if subtitles.empty?
 
   @service.download(release, subtitles.first)
 rescue => e
@@ -73,11 +82,12 @@ ARGV.each do |arg|
   path = Pathname.new(arg).realdirpath
 
   if path.file?
-    find_subtitle(path) if EXTENSIONS.include?(path.extname)
+    find_subtitle(path) if should_download?(path)
   elsif path.directory?
     Dir.glob(arg + '/**/*').each do |filepath|
       path = Pathname.new(filepath)
-      find_subtitle(path) if EXTENSIONS.include?(path.extname)
+
+      find_subtitle(path) if should_download(path)
     end
   else
     puts "Invalid path '#{path}'"
