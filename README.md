@@ -41,7 +41,7 @@ May you wish to remove your user information, run `$ ./legendastv --logout` to w
 If you have a media folder to keep your movies and series, you can add a Cron job:
 
 ```bash
-0 * 0 0 0 /path/to/legendas.tv /path/to/media/ # Run every hour
+0 * * * * /path/to/legendas.tv /path/to/media/ # Run every hour
 ```
 
 ## Installing Unrar
