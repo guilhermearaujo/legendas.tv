@@ -9,6 +9,7 @@ module LegendasTV
     attr_accessor :working_dir
 
     BASE_URL = 'http://legendas.tv'.freeze
+    PAGE_LENGTH = 24
     BASE_PATH = ENV['HOME'] + '/.legendas.tv'
     TOKEN_PATH = BASE_PATH + '/token.tv'
 
@@ -55,23 +56,45 @@ module LegendasTV
       !@token.nil? && !@token.empty?
     end
 
-    def find_release(release, lang = LANG[:pt])
+    def find_and_download(release, lang = LANG[:pt])
+      medium = find_medium(release)
+
+      raise "Could not find medium for '#{release.release_name}'" unless medium
+
+      subtitles = find_subtitles(release.best_guess_query, medium.id, lang)
+
+      raise "No subtitle found for '#{release.release_name}'" if subtitles.empty?
+
+      download(release, subtitles.first)
+    rescue Net::AuthenticationError
+      logout
+      raise 'Your credentials have expired. Please, log in again to be able to download'
+    end
+
+    private
+
+    def find_medium(release)
       path = "/legenda/sugestao/#{release.title}"
 
       media = JSON.parse(Net::GET(BASE_URL + path).body, symbolize_names: true)
                   .map { |m| Medium.new(m[:_source]) }
                   .select { |m| m.title.casecmp(release.title) == 0 }
 
-      medium =
-        if release.movie?
-          media.first
-        else
-          media.sort_by(&:id).find { |m| m.season == release.season }
-        end
+      if release.movie?
+        media.first
+      else
+        media.sort_by(&:id).find { |m| m.season == release.season }
+      end
+    end
 
-      raise "Could not find medium for '#{release.release_name}'" unless medium
+    def find_subtitles(query = '-', id = '-', lang = LANG[:pt], page = 0)
+      path = "/legenda/busca/#{query}/#{lang}/-/#{page}/#{id}"
 
-      find_by(query: release.best_guess_query, id: medium.id, lang: lang, page: 0)
+      results = Net::Parse(BASE_URL + path)
+
+      return results if results.count < PAGE_LENGTH
+
+      results.concat(find_subtitles(query, id, lang, page + 1))
     end
 
     def download(release, subtitle)
@@ -82,18 +105,6 @@ module LegendasTV
       end
 
       puts "Downloaded subtitle for #{subtitle.release}"
-    end
-
-    private
-
-    def find_by(query: '-', id: '-', lang: LANG[:pt], page: 0)
-      path = "/legenda/busca/#{query}/#{lang}/-/#{page}/#{id}"
-
-      results = Net::Parse(BASE_URL + path)
-
-      results.concat(find_by(query: query, id: id, lang: lang, page: page + 1)) if results.count >= 24
-
-      results || []
     end
 
     def extract(release, archive)

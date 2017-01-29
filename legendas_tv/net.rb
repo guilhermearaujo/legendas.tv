@@ -5,6 +5,9 @@ require 'securerandom'
 
 module LegendasTV
   module Net
+    class AuthenticationError < StandardError
+    end
+
     def self.GET(url, params = {}, headers = {})
       uri = URI.parse(URI.encode(url))
       uri.query = URI.encode_www_form(params)
@@ -38,6 +41,8 @@ module LegendasTV
         # Follow redirect
         Download(response['location'], token, &block)
       else
+        raise AuthenticationError if response.body =~ /precisa logar-se para efetuar download/
+
         file = Tempfile.new([::SecureRandom.uuid, Pathname.new(url).extname])
         file.write(response.body)
 

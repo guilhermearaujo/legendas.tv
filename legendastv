@@ -53,13 +53,9 @@ def find_subtitle(path)
 
   @service.working_dir = path.dirname
 
-  subtitles = @service.find_release(release)
-
-  raise "No subtitle found for '#{release.release_name}'" if subtitles.empty?
-
-  @service.download(release, subtitles.first)
+  subtitles = @service.find_and_download(release)
 rescue => e
-  puts e.message
+  puts "\nError: #{e.message}\n"
 end
 
 @service = LegendasTV::Service.new
