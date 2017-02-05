@@ -117,17 +117,17 @@ module LegendasTV
 
     def unrar(release, archive)
       Unrar::File.open(archive) do |rar|
-        find_and_extract(rar, "#{working_dir}/#{release.basename}.srt")
+        find_and_extract(rar, release, "#{working_dir}/#{release.basename}.srt")
       end
     end
 
     def unzip(release, archive)
       ::Zip::File.open(archive) do |zip|
-        find_and_extract(zip, "#{working_dir}/#{release.basename}.srt")
+        find_and_extract(zip, release, "#{working_dir}/#{release.basename}.srt")
       end
     end
 
-    def find_and_extract(files, filename)
+    def find_and_extract(files, release, filename)
       subs = files.select { |s| s.name =~ /\.srt/ }
 
       if subs.count == 1
