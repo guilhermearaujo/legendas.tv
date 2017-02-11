@@ -134,7 +134,15 @@ module LegendasTV
       if subs.count == 1
         subs.first.extract(filename)
       else
-        subs.find { |s| s.name =~ /#{release.group}\.srt$/i }.extract(filename)
+        sub = subs.find do |s|
+          if release.series?
+            s.name =~ /E[0]*#{release.episode}\..*#{release.group}\.srt$/i
+          else
+            s.name =~ /#{release.group}\.srt$/i
+          end
+        end
+
+        sub.extract(filename)
       end
     end
   end
