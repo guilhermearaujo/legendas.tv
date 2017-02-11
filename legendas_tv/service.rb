@@ -1,6 +1,7 @@
 require_relative 'medium'
 require_relative 'net'
 require_relative 'unrar'
+require 'colorize'
 require 'json'
 require 'zip'
 
@@ -104,7 +105,7 @@ module LegendasTV
         extract(release, archive)
       end
 
-      puts "Downloaded subtitle for #{subtitle.release}"
+      puts "Downloaded subtitle for #{subtitle.release}".green
     end
 
     def extract(release, archive)

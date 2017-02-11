@@ -7,6 +7,7 @@ If you enjoy their work, don't forget to [support them].
 
 * Clone this project: `$ git clone https://github.com/guilhermearaujo/legendas.tv.git`
 * Install [Unrar]: see [how to install](#installing-unrar)
+* Install [Colorize]: `$ gem install colorize`
 * Install [Nokogiri]: `$ gem install nokogiri`
 * Install [Rubyzip]: `$ gem install rubyzip`
 
@@ -61,5 +62,6 @@ Using Homebrew: `$ brew install unrar`
 [Legendas.tv]: http://legendas.tv
 [support them]: http://legendas.tv/vip
 [Unrar]: http://www.rarlab.com/rar_add.htm
+[Colorize]: https://github.com/fazibear/colorize
 [Nokogiri]: https://github.com/sparklemotion/nokogiri
 [Rubyzip]: https://github.com/rubyzip/rubyzip
