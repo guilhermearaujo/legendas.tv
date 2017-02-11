@@ -42,23 +42,40 @@ def with_progress(message)
 end
 
 def should_download?(path)
-  return false unless EXTENSIONS.include?(path.extname)
-  return true unless File.exist?(path.to_s.gsub(path.extname, '.srt'))
+  unless EXTENSIONS.include?(path.extname)
+    puts "File #{path.basename} ignored. " \
+         "\"#{path.extname}\" doesn't seem to be a video extension." if @verbose
+    return false
+  end
 
-  puts "Subtitle for '#{path.basename}' already downloaded".blue
+  if File.exist?(path.to_s.gsub(path.extname, '.srt'))
+    puts "Subtitle for '#{path.basename}' already downloaded".blue if @verbose
+    return false
+  end
+
   false
 end
 
 def find_subtitle(path)
+  puts "Searching subtitles for \"#{path.to_s.italic.bold.light_magenta}\"" if @verbose
+
+  unless should_download?(path)
+    puts if @verbose
+    return
+  end
+
   release = LegendasTV::Release.new(path.basename)
 
   @service.working_dir = path.dirname
 
   subtitles = @service.find_and_download(release)
+
+  puts if @verbose
 rescue => e
-  puts "\nError: #{e.message}\n".red
+  puts "Error: #{e.message} (file \"#{path.to_s}\")".red
 end
 
+@verbose = false
 @service = LegendasTV::Service.new
 
 ARGV.push('-h') if ARGV.empty?
@@ -68,6 +85,7 @@ OptionParser.new do |opts|
 
   opts.on('-h', '--help', 'Display this help') { puts opts; exit }
   opts.on('-l', '--logout', 'Logs the current user out') { @service.logout }
+  opts.on('-v', '--verbose', 'Extensive logs') { @verbose = true }
 end.parse!
 
 exit if ARGV.empty?
@@ -78,14 +96,15 @@ ARGV.each do |arg|
   path = Pathname.new(arg).realdirpath
 
   if path.file?
-    find_subtitle(path) if should_download?(path)
+    find_subtitle(path)
   elsif path.directory?
     Dir.glob(arg + '/**/*').each do |filepath|
       path = Pathname.new(filepath)
 
-      find_subtitle(path) if should_download?(path)
+      find_subtitle(path)
     end
   else
     puts "Invalid path '#{path}'".yellow
   end
+
 end
