@@ -53,7 +53,7 @@ def should_download?(path)
     return false
   end
 
-  false
+  true
 end
 
 def find_subtitle(path)
@@ -101,7 +101,7 @@ ARGV.each do |arg|
     Dir.glob(arg + '/**/*').each do |filepath|
       path = Pathname.new(filepath)
 
-      find_subtitle(path)
+      find_subtitle(path) if path.file?
     end
   else
     puts "Invalid path '#{path}'".yellow
