@@ -8,6 +8,9 @@ module LegendasTV
     class AuthenticationError < StandardError
     end
 
+    class NotFound < StandardError
+    end
+
     def self.GET(url, params = {}, headers = {})
       uri = URI.parse(URI.encode(url))
       uri.query = URI.encode_www_form(params)
@@ -36,6 +39,8 @@ module LegendasTV
       response = ::Net::HTTP.new(uri.host, uri.port).start do |http|
         http.request(request)
       end
+
+      raise NotFound if response.code == '404'
 
       if response.is_a?(::Net::HTTPRedirection)
         # Follow redirect

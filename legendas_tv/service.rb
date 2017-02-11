@@ -70,6 +70,8 @@ module LegendasTV
     rescue Net::AuthenticationError
       logout
       raise 'Your credentials have expired. Please, log in again to be able to download'
+    rescue Net::NotFound
+      raise 'The subtitle was not found on the server'
     end
 
     private
