@@ -41,7 +41,7 @@ module LegendasTV
         # Follow redirect
         Download(response['location'], token, &block)
       else
-        raise AuthenticationError if response.body =~ /precisa logar-se para efetuar download/
+        raise AuthenticationError if response.body =~ /precisa logar-se para efetuar download/i
 
         file = Tempfile.new([::SecureRandom.uuid, Pathname.new(url).extname])
         file.write(response.body)
@@ -59,7 +59,7 @@ module LegendasTV
       results = Nokogiri::HTML(body).xpath('//article/div')
 
       results.map do |r|
-        next if r.attr('class') =~ /banner/
+        next if r.attr('class') =~ /banner/i
         Subtitle.new(r)
       end.compact
     end

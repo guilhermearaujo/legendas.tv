@@ -16,7 +16,7 @@ module LegendasTV
 
         contents = `unrar l #{archive}`
 
-        raise 'File is not a RAR archive' if contents =~ /is not RAR archive/
+        raise 'File is not a RAR archive' if contents =~ /is not RAR archive/i
 
         files = []
 
@@ -35,7 +35,7 @@ module LegendasTV
 
         contents = `unrar l #{archive}`
 
-        raise 'File is not a RAR archive' if contents =~ /is not RAR archive/
+        raise 'File is not a RAR archive' if contents =~ /is not RAR archive/i
 
         puts 'Date                       Size        Name'
         puts '-------------------------  ----------  ------------------------------------------'

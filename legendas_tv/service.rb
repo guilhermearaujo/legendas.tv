@@ -38,7 +38,7 @@ module LegendasTV
 
       response = Net::POST(BASE_URL + '/login', params)
 
-      raise 'Invalid credentials' unless response['set-cookie'] =~ /au=/
+      raise 'Invalid credentials' unless response['set-cookie'] =~ /au=/i
 
       @token = response['set-cookie'].match(/au=(?<token>[^\s]+);/)[:token]
 
@@ -108,9 +108,9 @@ module LegendasTV
     end
 
     def extract(release, archive)
-      if archive =~ /.rar$/
+      if archive =~ /.rar$/i
         unrar(release, archive)
-      elsif archive =~ /.zip$/
+      elsif archive =~ /.zip$/i
         unzip(release, archive)
       end
     end
@@ -128,12 +128,12 @@ module LegendasTV
     end
 
     def find_and_extract(files, release, filename)
-      subs = files.select { |s| s.name =~ /\.srt/ }
+      subs = files.select { |s| s.name =~ /\.srt/i }
 
       if subs.count == 1
         subs.first.extract(filename)
       else
-        subs.find { |s| s.name =~ /#{release.group}\.srt$/ }.extract(filename)
+        subs.find { |s| s.name =~ /#{release.group}\.srt$/i }.extract(filename)
       end
     end
   end
