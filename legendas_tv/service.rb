@@ -81,7 +81,7 @@ module LegendasTV
 
       media = JSON.parse(Net::GET(BASE_URL + path).body, symbolize_names: true)
                   .map { |m| Medium.new(m[:_source]) }
-                  .select { |m| m.title.casecmp(release.title) == 0 }
+                  .select { |m| m.title.gsub('.', '').casecmp(release.title) == 0 }
 
       if release.movie?
         media.first
