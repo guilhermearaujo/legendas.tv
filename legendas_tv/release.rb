@@ -3,7 +3,7 @@ module LegendasTV
     attr_reader :basename, :title, :year, :season, :episode, :source, :quality, :codec, :group
 
     MOVIE_PATTERN =  /(?<title>.+)\.(?<year>\d+)(?<proper>(\.(PROPER|REPACK)))?\.(?<quality>[^\.]+)\.(?<source>.+)\.(?<codec>[^\.]+)[\.-](?<group>[^\.\[]+)/i
-    SERIES_PATTERN = /(?<title>.+)\.S(?<season>\d+)E(?<episode>\d+)(?<proper>(\.(PROPER|REPACK)))?\.(?<quality>[^\.]+)\.(?<source>.+)\.(?<codec>[^\.]+)[\.-](?<group>[^\.\[]+)/i
+    SERIES_PATTERN = /(?<title>.+)\.S(?<season>\d+)(E(?<episode>\d+))+(?<proper>(\.(PROPER|REPACK)))?\.(?<quality>[^\.]+)\.(?<source>.+)\.(?<codec>[^\.]+)[\.-](?<group>[^\.\[]+)/i
 
     def initialize(filename)
       @basename = File.basename(filename, '.*')
